@@ -1,42 +1,73 @@
-const canvas = document.getElementById("game");
+const canvas = document.getElementById("gameCanvas");
 const ctx = canvas.getContext("2d");
 
-let snake = [{x:10,y:10}];
-let food = {x:15,y:15};
-let dx = 0;
+const grid = 20;
+let snake = [{x: 200, y: 200}];
+
+let dx = grid;
 let dy = 0;
+
+let food = {
+x: Math.floor(Math.random()*20)*grid,
+y: Math.floor(Math.random()*20)*grid
+};
 
 document.addEventListener("keydown", direction);
 
 function direction(event){
-    if(event.key === "ArrowUp") {dx=0; dy=-1;}
-    if(event.key === "ArrowDown") {dx=0; dy=1;}
-    if(event.key === "ArrowLeft") {dx=-1; dy=0;}
-    if(event.key === "ArrowRight") {dx=1; dy=0;}
+
+if(event.key === "ArrowUp" && dy === 0){
+dx = 0;
+dy = -grid;
+}
+
+if(event.key === "ArrowDown" && dy === 0){
+dx = 0;
+dy = grid;
+}
+
+if(event.key === "ArrowLeft" && dx === 0){
+dx = -grid;
+dy = 0;
+}
+
+if(event.key === "ArrowRight" && dx === 0){
+dx = grid;
+dy = 0;
+}
+
 }
 
 function draw(){
-    ctx.clearRect(0,0,400,400);
 
-    snake.forEach(part=>{
-        ctx.fillStyle="green";
-        ctx.fillRect(part.x*20,part.y*20,20,20);
-    });
+ctx.clearRect(0,0,400,400);
 
-    ctx.fillStyle="red";
-    ctx.fillRect(food.x*20,food.y*20,20,20);
+snake.forEach(part=>{
+ctx.fillStyle="lime";
+ctx.fillRect(part.x, part.y, grid, grid);
+});
 
-    let head={x:snake[0].x+dx,y:snake[0].y+dy};
-    snake.unshift(head);
+ctx.fillStyle="red";
+ctx.fillRect(food.x, food.y, grid, grid);
 
-    if(head.x===food.x && head.y===food.y){
-        food={
-            x:Math.floor(Math.random()*20),
-            y:Math.floor(Math.random()*20)
-        };
-    } else {
-        snake.pop();
-    }
+let head = {
+x: snake[0].x + dx,
+y: snake[0].y + dy
+};
+
+snake.unshift(head);
+
+if(head.x === food.x && head.y === food.y){
+
+food = {
+x: Math.floor(Math.random()*20)*grid,
+y: Math.floor(Math.random()*20)*grid
+};
+
+}else{
+snake.pop();
+}
+
 }
 
 setInterval(draw,100);
